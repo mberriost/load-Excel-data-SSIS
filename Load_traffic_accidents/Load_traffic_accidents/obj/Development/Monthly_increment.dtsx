@@ -1,0 +1,1120 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="4/11/2025 9:20:34 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="HYRULE"
+  DTS:CreatorName="HYRULE\melis"
+  DTS:DTSID="{7EC3B4AD-36C5-472E-B11A-BADD07724F0F}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="16.0.5685.0"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="Package"
+  DTS:PackageType="5"
+  DTS:VersionBuild="8"
+  DTS:VersionGUID="{9807C973-CF0B-414B-8102-D9025A5826F2}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Excel Connection Manager]"
+      DTS:CreationName="EXCEL"
+      DTS:DTSID="{4D3BBB1E-7E7A-4F07-8887-FC4E293083AD}"
+      DTS:ObjectName="Excel Connection Manager">
+      <DTS:PropertyExpression
+        DTS:Name="ExcelFilePath">@[User::Path]+"DataAccident_"+ (DT_WSTR, 6) @[User::Period]+".xlsx"</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectRetryCount="0"
+          DTS:ConnectRetryInterval="0"
+          DTS:ConnectionString="Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\SSIS Projects\MonthlyIncremental\DataAccident_202504.xlsx;Extended Properties=&quot;EXCEL 12.0 XML;HDR=YES&quot;;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[HYRULE.MONROE]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{DAA4D983-B616-4024-AEBE-3ECEE6C04FDE}"
+      DTS:ObjectName="HYRULE.MONROE">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectRetryCount="1"
+          DTS:ConnectRetryInterval="5"
+          DTS:ConnectionString="Data Source=HYRULE;Initial Catalog=MONROE;Provider=SQLOLEDB.1;Integrated Security=SSPI;Application Name=SSIS-Package-{DAA4D983-B616-4024-AEBE-3ECEE6C04FDE}HYRULE.MONROE;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{8FFF7CBE-E219-4A19-89BA-F036F63C03C9}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Path">
+      <DTS:VariableValue
+        DTS:DataType="8">C:\SSIS Projects\MonthlyIncremental\</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{25A03A64-4238-4970-A2F8-7CE6FAE68125}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="(DT_I4) ((DT_WSTR, 4) YEAR( GETDATE() ) + RIGHT(&quot;0&quot; +  (DT_WSTR, 2) MONTH( GETDATE() ), 2 )   )"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Period">
+      <DTS:VariableValue
+        DTS:DataType="3">202504</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Clean Current Month"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{F11D6889-5E9C-43F0-A48C-239BE44F6549}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Clean Current Month"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{DAA4D983-B616-4024-AEBE-3ECEE6C04FDE}"
+          SQLTask:SqlStatementSource="DELETE from traffic_accidents WHERE PeriodMonth = ?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="0"
+            SQLTask:DtsVariableName="User::Period"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="-1" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Load Data traffic_accidents"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{24BC9CAE-0CDD-4B16-B573-28BC4F3A125A}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Load Data traffic_accidents"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Load Data traffic_accidents\Data Conversion"
+              componentClassID="Microsoft.DataConvert"
+              contactInfo="Data Conversion;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Data Conversion"
+              name="Data Conversion"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\Load Data traffic_accidents\Data Conversion.Inputs[Data Conversion Input]"
+                  name="Data Conversion Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Load Data traffic_accidents\Data Conversion.Inputs[Data Conversion Input].Columns[RecordNumber]"
+                      cachedDataType="r8"
+                      cachedName="RecordNumber"
+                      lineageId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[RecordNumber]" />
+                    <inputColumn
+                      refId="Package\Load Data traffic_accidents\Data Conversion.Inputs[Data Conversion Input].Columns[DayType]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="DayType"
+                      lineageId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[DayType]" />
+                    <inputColumn
+                      refId="Package\Load Data traffic_accidents\Data Conversion.Inputs[Data Conversion Input].Columns[Collision]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="Collision"
+                      lineageId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[Collision]" />
+                    <inputColumn
+                      refId="Package\Load Data traffic_accidents\Data Conversion.Inputs[Data Conversion Input].Columns[InjuryType]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="InjuryType"
+                      lineageId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[InjuryType]" />
+                    <inputColumn
+                      refId="Package\Load Data traffic_accidents\Data Conversion.Inputs[Data Conversion Input].Columns[PrimaryFactor]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="PrimaryFactor"
+                      lineageId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[PrimaryFactor]" />
+                    <inputColumn
+                      refId="Package\Load Data traffic_accidents\Data Conversion.Inputs[Data Conversion Input].Columns[ReportLocation]"
+                      cachedDataType="wstr"
+                      cachedLength="255"
+                      cachedName="ReportLocation"
+                      lineageId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[ReportLocation]" />
+                    <inputColumn
+                      refId="Package\Load Data traffic_accidents\Data Conversion.Inputs[Data Conversion Input].Columns[Latitude]"
+                      cachedDataType="r8"
+                      cachedName="Latitude"
+                      lineageId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[Latitude]" />
+                    <inputColumn
+                      refId="Package\Load Data traffic_accidents\Data Conversion.Inputs[Data Conversion Input].Columns[Longitude]"
+                      cachedDataType="r8"
+                      cachedName="Longitude"
+                      lineageId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[Longitude]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Output]"
+                  exclusionGroup="1"
+                  name="Data Conversion Output"
+                  synchronousInputId="Package\Load Data traffic_accidents\Data Conversion.Inputs[Data Conversion Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of RecordNumber]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of RecordNumber]"
+                      name="Copy of RecordNumber"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[RecordNumber]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of DayType]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="255"
+                      lineageId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of DayType]"
+                      name="Copy of DayType"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[DayType]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of Collision]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="255"
+                      lineageId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of Collision]"
+                      name="Copy of Collision"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[Collision]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of InjuryType]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="255"
+                      lineageId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of InjuryType]"
+                      name="Copy of InjuryType"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[InjuryType]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of PrimaryFactor]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="255"
+                      lineageId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of PrimaryFactor]"
+                      name="Copy of PrimaryFactor"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[PrimaryFactor]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of ReportLocation]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="255"
+                      lineageId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of ReportLocation]"
+                      name="Copy of ReportLocation"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[ReportLocation]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of Latitude]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="255"
+                      lineageId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of Latitude]"
+                      name="Copy of Latitude"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[Latitude]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of Longitude]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="255"
+                      lineageId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of Longitude]"
+                      name="Copy of Longitude"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[Longitude]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Data Conversion Error Output"
+                  synchronousInputId="Package\Load Data traffic_accidents\Data Conversion.Inputs[Data Conversion Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Load Data traffic_accidents\Excel Source"
+              componentClassID="Microsoft.ExcelSource"
+              contactInfo="Excel Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+              description="Excel Source"
+              name="Excel Source"
+              usesDispositions="true"
+              version="1">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">Reporte$</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">0</property>
+                <property
+                  dataType="System.String"
+                  description="The mapping from parameters in the SQL command to variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Load Data traffic_accidents\Excel Source.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[Excel Connection Manager]"
+                  connectionManagerRefId="Package.ConnectionManagers[Excel Connection Manager]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output]"
+                  name="Excel Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[RecordNumber]"
+                      dataType="r8"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].ExternalColumns[RecordNumber]"
+                      lineageId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[RecordNumber]"
+                      name="RecordNumber"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[DayType]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].ExternalColumns[DayType]"
+                      length="255"
+                      lineageId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[DayType]"
+                      name="DayType"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[Collision]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].ExternalColumns[Collision]"
+                      length="255"
+                      lineageId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[Collision]"
+                      name="Collision"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[InjuryType]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].ExternalColumns[InjuryType]"
+                      length="255"
+                      lineageId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[InjuryType]"
+                      name="InjuryType"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[PrimaryFactor]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].ExternalColumns[PrimaryFactor]"
+                      length="255"
+                      lineageId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[PrimaryFactor]"
+                      name="PrimaryFactor"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[ReportLocation]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].ExternalColumns[ReportLocation]"
+                      length="255"
+                      lineageId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[ReportLocation]"
+                      name="ReportLocation"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[Latitude]"
+                      dataType="r8"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].ExternalColumns[Latitude]"
+                      lineageId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[Latitude]"
+                      name="Latitude"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[Longitude]"
+                      dataType="r8"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].ExternalColumns[Longitude]"
+                      lineageId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].Columns[Longitude]"
+                      name="Longitude"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].ExternalColumns[RecordNumber]"
+                      dataType="r8"
+                      name="RecordNumber" />
+                    <externalMetadataColumn
+                      refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].ExternalColumns[DayType]"
+                      dataType="wstr"
+                      length="255"
+                      name="DayType" />
+                    <externalMetadataColumn
+                      refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].ExternalColumns[Collision]"
+                      dataType="wstr"
+                      length="255"
+                      name="Collision" />
+                    <externalMetadataColumn
+                      refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].ExternalColumns[InjuryType]"
+                      dataType="wstr"
+                      length="255"
+                      name="InjuryType" />
+                    <externalMetadataColumn
+                      refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].ExternalColumns[PrimaryFactor]"
+                      dataType="wstr"
+                      length="255"
+                      name="PrimaryFactor" />
+                    <externalMetadataColumn
+                      refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].ExternalColumns[ReportLocation]"
+                      dataType="wstr"
+                      length="255"
+                      name="ReportLocation" />
+                    <externalMetadataColumn
+                      refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].ExternalColumns[Latitude]"
+                      dataType="r8"
+                      name="Latitude" />
+                    <externalMetadataColumn
+                      refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output].ExternalColumns[Longitude]"
+                      dataType="r8"
+                      name="Longitude" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Error Output]"
+                  isErrorOut="true"
+                  name="Excel Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Error Output].Columns[RecordNumber]"
+                      dataType="r8"
+                      lineageId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Error Output].Columns[RecordNumber]"
+                      name="RecordNumber" />
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Error Output].Columns[DayType]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Error Output].Columns[DayType]"
+                      name="DayType" />
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Error Output].Columns[Collision]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Error Output].Columns[Collision]"
+                      name="Collision" />
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Error Output].Columns[InjuryType]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Error Output].Columns[InjuryType]"
+                      name="InjuryType" />
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Error Output].Columns[PrimaryFactor]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Error Output].Columns[PrimaryFactor]"
+                      name="PrimaryFactor" />
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Error Output].Columns[ReportLocation]"
+                      dataType="wstr"
+                      length="255"
+                      lineageId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Error Output].Columns[ReportLocation]"
+                      name="ReportLocation" />
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Error Output].Columns[Latitude]"
+                      dataType="r8"
+                      lineageId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Error Output].Columns[Latitude]"
+                      name="Latitude" />
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Error Output].Columns[Longitude]"
+                      dataType="r8"
+                      lineageId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Error Output].Columns[Longitude]"
+                      name="Longitude" />
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Load Data traffic_accidents\MONROE DB"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="MONROE DB"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[dbo].[traffic_accidents]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Load Data traffic_accidents\MONROE DB.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[HYRULE.MONROE]"
+                  connectionManagerRefId="Package.ConnectionManagers[HYRULE.MONROE]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].Columns[PeriodMonth]"
+                      cachedDataType="i4"
+                      cachedName="PeriodMonth"
+                      externalMetadataColumnId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].ExternalColumns[PeriodMonth]"
+                      lineageId="Package\Load Data traffic_accidents\PeriodMonth Column.Outputs[Derived Column Output].Columns[PeriodMonth]" />
+                    <inputColumn
+                      refId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].Columns[Copy of RecordNumber]"
+                      cachedDataType="i4"
+                      cachedName="Copy of RecordNumber"
+                      externalMetadataColumnId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].ExternalColumns[RecordNumber]"
+                      lineageId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of RecordNumber]" />
+                    <inputColumn
+                      refId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].Columns[Copy of DayType]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="Copy of DayType"
+                      externalMetadataColumnId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].ExternalColumns[DayType]"
+                      lineageId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of DayType]" />
+                    <inputColumn
+                      refId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].Columns[Copy of Collision]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="Copy of Collision"
+                      externalMetadataColumnId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].ExternalColumns[Collision]"
+                      lineageId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of Collision]" />
+                    <inputColumn
+                      refId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].Columns[Copy of InjuryType]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="Copy of InjuryType"
+                      externalMetadataColumnId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].ExternalColumns[InjuryType]"
+                      lineageId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of InjuryType]" />
+                    <inputColumn
+                      refId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].Columns[Copy of PrimaryFactor]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="Copy of PrimaryFactor"
+                      externalMetadataColumnId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].ExternalColumns[PrimaryFactor]"
+                      lineageId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of PrimaryFactor]" />
+                    <inputColumn
+                      refId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].Columns[Copy of ReportLocation]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="Copy of ReportLocation"
+                      externalMetadataColumnId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].ExternalColumns[ReportLocation]"
+                      lineageId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of ReportLocation]" />
+                    <inputColumn
+                      refId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].Columns[Copy of Latitude]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="Copy of Latitude"
+                      externalMetadataColumnId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].ExternalColumns[Latitude]"
+                      lineageId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of Latitude]" />
+                    <inputColumn
+                      refId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].Columns[Copy of Longitude]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="255"
+                      cachedName="Copy of Longitude"
+                      externalMetadataColumnId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].ExternalColumns[Longitude]"
+                      lineageId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of Longitude]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].ExternalColumns[PeriodMonth]"
+                      dataType="i4"
+                      name="PeriodMonth" />
+                    <externalMetadataColumn
+                      refId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].ExternalColumns[RecordNumber]"
+                      dataType="i4"
+                      name="RecordNumber" />
+                    <externalMetadataColumn
+                      refId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].ExternalColumns[DayType]"
+                      codePage="1252"
+                      dataType="text"
+                      name="DayType" />
+                    <externalMetadataColumn
+                      refId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].ExternalColumns[Collision]"
+                      codePage="1252"
+                      dataType="text"
+                      name="Collision" />
+                    <externalMetadataColumn
+                      refId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].ExternalColumns[InjuryType]"
+                      codePage="1252"
+                      dataType="text"
+                      name="InjuryType" />
+                    <externalMetadataColumn
+                      refId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].ExternalColumns[PrimaryFactor]"
+                      codePage="1252"
+                      dataType="text"
+                      name="PrimaryFactor" />
+                    <externalMetadataColumn
+                      refId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].ExternalColumns[ReportLocation]"
+                      codePage="1252"
+                      dataType="text"
+                      name="ReportLocation" />
+                    <externalMetadataColumn
+                      refId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].ExternalColumns[Latitude]"
+                      codePage="1252"
+                      dataType="text"
+                      name="Latitude" />
+                    <externalMetadataColumn
+                      refId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input].ExternalColumns[Longitude]"
+                      codePage="1252"
+                      dataType="text"
+                      name="Longitude" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Load Data traffic_accidents\MONROE DB.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\MONROE DB.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Load Data traffic_accidents\MONROE DB.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\MONROE DB.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Load Data traffic_accidents\MONROE DB.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Load Data traffic_accidents\PeriodMonth Column"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="PeriodMonth Column"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\Load Data traffic_accidents\PeriodMonth Column.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Load Data traffic_accidents\PeriodMonth Column.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\Load Data traffic_accidents\PeriodMonth Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\PeriodMonth Column.Outputs[Derived Column Output].Columns[PeriodMonth]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Load Data traffic_accidents\PeriodMonth Column.Outputs[Derived Column Output].Columns[PeriodMonth]"
+                      name="PeriodMonth"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">@[User::Period]</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">@[User::Period]</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\Load Data traffic_accidents\PeriodMonth Column.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\Load Data traffic_accidents\PeriodMonth Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\PeriodMonth Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Load Data traffic_accidents\PeriodMonth Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Load Data traffic_accidents\PeriodMonth Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Load Data traffic_accidents\PeriodMonth Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Load Data traffic_accidents.Paths[Data Conversion Output]"
+              endId="Package\Load Data traffic_accidents\PeriodMonth Column.Inputs[Derived Column Input]"
+              name="Data Conversion Output"
+              startId="Package\Load Data traffic_accidents\Data Conversion.Outputs[Data Conversion Output]" />
+            <path
+              refId="Package\Load Data traffic_accidents.Paths[Derived Column Output]"
+              endId="Package\Load Data traffic_accidents\MONROE DB.Inputs[OLE DB Destination Input]"
+              name="Derived Column Output"
+              startId="Package\Load Data traffic_accidents\PeriodMonth Column.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\Load Data traffic_accidents.Paths[Excel Source Output]"
+              endId="Package\Load Data traffic_accidents\Data Conversion.Inputs[Data Conversion Input]"
+              name="Excel Source Output"
+              startId="Package\Load Data traffic_accidents\Excel Source.Outputs[Excel Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{EF80F36C-A833-4EFB-B6A5-1A21154BEBF4}"
+      DTS:From="Package\Clean Current Month"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Load Data traffic_accidents" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="176,42"
+          Id="Package\Clean Current Month"
+          TopLeft="503,151" />
+        <NodeLayout
+          Size="207,42"
+          Id="Package\Load Data traffic_accidents"
+          TopLeft="477,247" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="591,193">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-10.5,54"
+              Start="0,0"
+              End="-10.5,46.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,23" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,23"
+                    Point2="0,27"
+                    Point3="-4,27" />
+                  <mssgle:LineSegment
+                    End="-6.5,27" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-6.5,27"
+                    Point2="-10.5,27"
+                    Point3="-10.5,31" />
+                  <mssgle:LineSegment
+                    End="-10.5,46.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Load Data traffic_accidents">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="139,42"
+          Id="Package\Load Data traffic_accidents\Excel Source"
+          TopLeft="432,86" />
+        <NodeLayout
+          Size="156,42"
+          Id="Package\Load Data traffic_accidents\Data Conversion"
+          TopLeft="422,169" />
+        <EdgeLayout
+          Id="Package\Load Data traffic_accidents.Paths[Excel Source Output]"
+          TopLeft="500.75,128">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,41"
+              Start="0,0"
+              End="0,33.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,33.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="177,42"
+          Id="Package\Load Data traffic_accidents\PeriodMonth Column"
+          TopLeft="425,258" />
+        <EdgeLayout
+          Id="Package\Load Data traffic_accidents.Paths[Data Conversion Output]"
+          TopLeft="500,211">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="13.5,47"
+              Start="0,0"
+              End="13.5,39.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,19.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,19.5"
+                    Point2="0,23.5"
+                    Point3="4,23.5" />
+                  <mssgle:LineSegment
+                    End="9.5,23.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="9.5,23.5"
+                    Point2="13.5,23.5"
+                    Point3="13.5,27.5" />
+                  <mssgle:LineSegment
+                    End="13.5,39.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="139,42"
+          Id="Package\Load Data traffic_accidents\MONROE DB"
+          TopLeft="446,337" />
+        <EdgeLayout
+          Id="Package\Load Data traffic_accidents.Paths[Derived Column Output]"
+          TopLeft="514.5,300">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,37"
+              Start="0,0"
+              End="0,29.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,29.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Load Data traffic_accidents\Excel Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Load Data traffic_accidents\MONROE DB">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
